@@ -3,7 +3,7 @@
 
 Apartment::Tenant.switch(:latina_shop) do
   Spree.config do |config|
-    # config.use_legacy_db_preferences!
+    config.use_legacy_db_preferences!
 
     # Default currency for new sites
     config.currency = "EUR"
@@ -23,7 +23,7 @@ end
 
 Apartment::Tenant.switch(:pescara_shop) do
   Spree.config do |config|
-    # config.use_legacy_db_preferences!
+    config.use_legacy_db_preferences!
 
     # Default currency for new sites
     config.currency = "USD"
