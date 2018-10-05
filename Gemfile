@@ -38,6 +38,9 @@ gem 'jbuilder', '~> 2.5'
 gem 'solidus', '~> 2.6'
 gem 'solidus_auth_devise', '~> 2.1.0'
 
+# Multitenant
+gem 'apartment', '~> 2.2.0'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
