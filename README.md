@@ -152,3 +152,25 @@ host! "my.awesome.host"
 controller.request.host = "my.awesome.host"
 ```
 
+# Seeding
+
+I reccomend using plain-old Rails seed mechanism instead of external gems. One
+of the most famous is [Seedbank][seedbank-gh], but seems not working within
+apartment (and lacks support for Rails 5). A little code has to be written in
+order to setup a very basic tenant-based seeds loading mechanism. Something
+like:
+
+```ruby
+# config/db/seeds.rb
+
+NebulabShop::Stores.each do |tenant, domain|
+  Apartment::Tenant.switch(tenant) do
+    Rails.root.join("db/seeds/#{tenant}").each_child do |seed_file|
+      puts "Loading seed file: #{seed_file}"
+      load seed_file
+    end
+  rescue Errno::ENOENT => e
+    puts "there was an error while accessing #{e.message}"
+  end
+end
+```

@@ -20,6 +20,8 @@ module NebulabShop
       def raise_apartment_not_found_for(tenant)
         raise Apartment::ApartmentError, "No tenant found for #{tenant}"
       end
+
+      extend self
     end
   end
 end
