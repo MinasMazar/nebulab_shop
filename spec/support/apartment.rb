@@ -10,13 +10,27 @@ class ActiveRecord::Base
 end
 
 RSpec.configure do |config|
+  config.before(:suite) do
+    Apartment::Tenant.drop('pescara_shop') rescue nil
+    Apartment::Tenant.create('pescara_shop')
+  end
+
   config.before(:each) do
     Capybara.run_server = false
     ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
+    Apartment::Tenant.drop('pescara_shop') rescue nil
+    # Create the default tenant for our tests
+    Apartment::Tenant.create('pescara_shop')
   end
 
   config.before(:each, type: :feature) do
-   ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
+    ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
+    Apartment::Tenant.switch!('pescara_shop')
+  end
+
+  config.after(:each) do
+    # Reset tenant back to `public`
+    Apartment::Tenant.reset rescue nil
   end
 
   config.after(:each, type: :feature) do
@@ -46,6 +60,7 @@ RSpec.configure do |config|
 
   def extract_host_from_example(example)
     tenant = example.metadata[:tenant] || "pescara_shop"
+    act_tenant = Apartment::Tenant.current
     NebulabShop::Stores[tenant.to_sym]
   end
 end
