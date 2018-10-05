@@ -57,3 +57,5 @@ RSpec.configure do |config|
 
   config.include Rails.application.routes.url_helpers
 end
+
+ActiveJob::Base.queue_adapter = :test
