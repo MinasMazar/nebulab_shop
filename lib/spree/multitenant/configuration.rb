@@ -35,9 +35,16 @@ module NebulabShop
         super.tap { |pref_store| pref_store.store.tenant = tenant }
       end
 
+      def use_legacy_db_preferences!
+        super.tap { |pref_store| pref_store.store.tenant = tenant }
+      end
+
       def new_app_configuration_for(tenant)
         self.class.new.tap do |new_app_conf|
           new_app_conf.tenant = tenant
+          if preference_store.is_a?(Spree::Preferences::ScopedStore)
+            new_app_conf.use_legacy_db_preferences!
+          end
         end
       end
 
