@@ -11,11 +11,15 @@ end
 
 RSpec.configure do |config|
   config.before(:suite) do
+    # Use transactions for tests
+    DatabaseCleaner.strategy = :transaction
     Apartment::Tenant.drop('pescara_shop') rescue nil
     Apartment::Tenant.create('pescara_shop')
   end
 
   config.before(:each) do
+    # Start transaction for this test
+    DatabaseCleaner.start
     Capybara.run_server = false
     ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
     Apartment::Tenant.drop('pescara_shop') rescue nil
@@ -31,9 +35,12 @@ RSpec.configure do |config|
   config.after(:each) do
     # Reset tenant back to `public`
     Apartment::Tenant.reset rescue nil
+    # Rollback transaction
+    DatabaseCleaner.clean
   end
 
   config.after(:each, type: :feature) do
+    DatabaseCleaner.strategy = :truncation if Capybara.current_driver != :rack_test
     ActiveRecord::Base.shared_connection = nil
   end
 
