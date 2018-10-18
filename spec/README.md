@@ -3,9 +3,7 @@
 
 Since Solidus uses [RSpec][rspec-homepage], I'have focused my analysis on how this testing suite works with Apartment gem. Let's begin taking a look at this [Apartment wiki page][apartment-testing]. Here we can find most of instructions and best practices we need:
 
-```
-The number one thing that has helped us in testing is to create a single tenant before the whole test suite runs and switch to that tenant for the run of your tests.
-```
+> The number one thing that has helped us in testing is to create a single tenant before the whole test suite runs and switch to that tenant for the run of your tests.
 
 In fact, testing with feature (JS) specs it's quite a mess.. If I'm not wrong, the reason is the same why we could not use __transactional tests_ with Capybara:
 
@@ -13,9 +11,7 @@ In fact, testing with feature (JS) specs it's quite a mess.. If I'm not wrong, t
 
 See [here][apartment-capybara-issue444] for more details.
 
-```
-Capybara does it's stuff in a separate thread to the main test thread. due to connection sharing in rails 5.1, both threads use the same database connection. apartment instantiates a different adapter object per thread, and the capybara adapter doesn't receive the switch! issued during test bootstrapping, so as far as it's concerned the "current" tenant is still the default_tenant 'public' (despite the main test thread, and main test apartment adapter, changing the "schema_search_path" for the shared connection).
-```
+> Capybara does it's stuff in a separate thread to the main test thread. due to connection sharing in rails 5.1, both threads use the same database connection. apartment instantiates a different adapter object per thread, and the capybara adapter doesn't receive the switch! issued during test bootstrapping, so as far as it's concerned the "current" tenant is still the default_tenant 'public' (despite the main test thread, and main test apartment adapter, changing the "schema_search_path" for the shared connection).
 
 The combination of the mandatory use of [DatabaseCleaner][dbcleaner-gh] and the need of testing against a single test-tenant, produce a quite standard configuration like this:
 
